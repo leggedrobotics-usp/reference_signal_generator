@@ -1,10 +1,10 @@
 import rclpy
 from rclpy.node import Node
 
-from ref_signal_srvs.srv import Step
-from ref_signal_srvs.srv import Ramp
-from ref_signal_srvs.srv import Wave
-from ref_signal_srvs.srv import Chirp
+from reference_signal_srvs.srv import Step
+from reference_signal_srvs.srv import Ramp
+from reference_signal_srvs.srv import Wave
+from reference_signal_srvs.srv import Chirp
 
 from std_srvs.srv import Trigger
 from std_msgs.msg import Float64

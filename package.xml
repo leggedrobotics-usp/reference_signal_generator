@@ -11,7 +11,7 @@
   <depend>std_srvs</depend>
   <depend>std_msgs</depend>
 
-  <exec_depend>ref_signal_srvs</exec_depend>
+  <exec_depend>reference_signal_srvs</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

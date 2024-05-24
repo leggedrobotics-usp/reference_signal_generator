@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'reference_signal_generator = reference_signal_generator.reference_signal_generator:main'
+            'reference_signal_generator = reference_signal_generator.reference_signal_generator:main',
         ],
     },
 )
