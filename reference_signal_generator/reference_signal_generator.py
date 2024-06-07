@@ -129,22 +129,22 @@ class RefSignalServer(Node):
                             self.msg.data[i] = self.initial_value[i] + (self.end_time[i] - self.start_time[i])*self.slope[i]
                     case 'sine':
                         if self.elapsed_time >= self.start_time[i] and self.elapsed_time < self.end_time[i]:
-                            self.msg.data[i] = self.offset[i] + self.amplitude[i]/2 * math.sin(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + self.phase[i])
+                            self.msg.data[i] = self.offset[i] + self.amplitude[i]/2 * math.sin(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + math.pi / 180 * self.phase[i])
                         else:
                             self.msg.data[i] = self.offset[i]
                     case 'square':
                         if self.elapsed_time >= self.start_time[i] and self.elapsed_time < self.end_time[i]:
-                            self.msg.data[i] = self.offset[i] + self.amplitude[i]/2 * math.copysign(1, math.sin(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + self.phase[i]))
+                            self.msg.data[i] = self.offset[i] + self.amplitude[i]/2 * math.copysign(1, math.sin(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + math.pi / 180 * self.phase[i]))
                         else:
                             self.msg.data[i] = self.offset[i]
                     case 'triangle':
                         if self.elapsed_time >= self.start_time[i] and self.elapsed_time < self.end_time[i]:
-                            self.msg.data[i] = self.offset[i] + self.amplitude/2 * signal.sawtooth(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + self.phase[i], width=0.5)
+                            self.msg.data[i] = self.offset[i] + self.amplitude/2 * signal.sawtooth(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + math.pi / 180 * self.phase[i], width=0.5)
                         else:
                             self.msg.data[i] = self.offset[i]
                     case 'sawtooth':
                         if self.elapsed_time >= self.start_time[i] and self.elapsed_time < self.end_time[i]:
-                            self.msg.data[i] = self.offset[i] + self.amplitude/2 * signal.sawtooth(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + self.phase[i], width=1)
+                            self.msg.data[i] = self.offset[i] + self.amplitude/2 * signal.sawtooth(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + math.pi / 180 * self.phase[i], width=1)
                         else:
                             self.msg.data[i] = self.offset[i]
                     case 'chirp':
