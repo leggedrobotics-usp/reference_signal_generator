@@ -27,9 +27,8 @@ class RefSignalServer(Node):
         # Declare the topic_name parameter
         self.declare_parameter('topic_name', 'reference_signal')
         topic_name = self.get_parameter('topic_name').get_parameter_value().string_value
-        # Create services for setting up, starting and stopping the reference signal
-        self.setup_service = self.create_service(Setup, topic_name + '/setup', self.setup_callback)
-        self.start_service = self.create_service(Trigger, topic_name + '/start', self.start_callback)
+        # Create services for starting and stopping the reference signal
+        self.start_service = self.create_service(Setup, topic_name + '/start', self.start_callback)
         self.stop_service = self.create_service(Trigger, topic_name +'/stop', self.stop_callback)
         # Create a publisher with the parameterized topic name
         self.publisher = self.create_publisher(Float64MultiArray, topic_name, 10)
@@ -41,7 +40,7 @@ class RefSignalServer(Node):
         self.total_time = 0.0
         self.signal_type = []
 
-    def setup_callback(self, request, response):
+    def start_callback(self, request, response):
         # Check if provided signal types are valid
         if any(s not in set(['step', 'ramp', 'sine', 'square', 'triangle', 'sawtooth', 'chirp']) for s in request.signal_type):
             response.success = False
@@ -86,22 +85,17 @@ class RefSignalServer(Node):
             self.total_time = float(request.total_time)
             # Initialize msg.data
             self.msg.data = array.array('d', [0.0] * len(self.signal_type))
+            # Destroy the previous timer
+            self.timer.destroy()
+            # Start the timer
+            self.elapsed_time = 0.0
+            self.timer = self.create_timer(self.publish_period, self.publish_reference_signal)
+            # Respond the service call
             # Respond the service call
             response.success = True
-            response.message = 'Reference signal successfully setup'
+            response.message = 'Reference signal successfully started'
             return response
     
-    def start_callback(self, request, response):
-        # Destroy the previous timer
-        self.timer.destroy()
-        # Start the timer
-        self.elapsed_time = 0.0
-        self.timer = self.create_timer(self.publish_period, self.publish_reference_signal)
-        # Respond the service call
-        response.success = True
-        response.message = 'Reference signal successfully started'
-        return response
-
     def stop_callback(self, request, response):
         # Stop publishing
         self.timer.destroy()
