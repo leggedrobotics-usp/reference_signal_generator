@@ -42,7 +42,7 @@ class RefSignalServer(Node):
 
     def start_callback(self, request, response):
         # Check if provided signal types are valid
-        if any(s not in set(['step', 'ramp', 'sine', 'square', 'triangle', 'sawtooth', 'chirp']) for s in request.signal_type):
+        if any(s not in set(['step', 'ramp', 'spline', 'sine', 'square', 'triangle', 'sawtooth', 'chirp']) for s in request.signal_type):
             response.success = False
             response.message = 'Invalid signal type detected'
             return response
@@ -127,6 +127,17 @@ class RefSignalServer(Node):
                             self.msg.data[i] = self.initial_value[i] + (self.elapsed_time - self.start_time[i])*self.slope[i]
                         else:
                             self.msg.data[i] = self.initial_value[i] + (self.end_time[i] - self.start_time[i])*self.slope[i]
+                    case 'spline':
+                        if self.elapsed_time < self.start_time[i]:
+                            self.msg.data[i] = self.initial_value[i]
+                        elif self.elapsed_time < self.end_time[i]:
+                            self.msg.data[i] = self.initial_value[i] + \
+                                               10/(self.end_time[i] - self.start_time[i])**3 * (self.final_value[i] - self.initial_value[i]) * (self.elapsed_time - self.start_time[i])**3 + \
+                                               15/(self.end_time[i] - self.start_time[i])**4 * (self.initial_value[i] - self.final_value[i]) * (self.elapsed_time - self.start_time[i])**4 + \
+                                               6/(self.end_time[i] - self.start_time[i])**5 * (self.final_value[i] - self.initial_value[i]) * (self.elapsed_time - self.start_time[i])**5
+
+                        else:
+                            self.msg.data[i] = self.final_value[i]
                     case 'sine':
                         if self.elapsed_time >= self.start_time[i] and self.elapsed_time < self.end_time[i]:
                             self.msg.data[i] = self.offset[i] + self.amplitude[i]/2 * math.sin(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + math.pi / 180 * self.phase[i])
@@ -139,12 +150,12 @@ class RefSignalServer(Node):
                             self.msg.data[i] = self.offset[i]
                     case 'triangle':
                         if self.elapsed_time >= self.start_time[i] and self.elapsed_time < self.end_time[i]:
-                            self.msg.data[i] = self.offset[i] + self.amplitude/2 * signal.sawtooth(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + math.pi / 180 * self.phase[i], width=0.5)
+                            self.msg.data[i] = self.offset[i] + self.amplitude[i]/2 * signal.sawtooth(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + math.pi / 180 * self.phase[i], width=0.5)
                         else:
                             self.msg.data[i] = self.offset[i]
                     case 'sawtooth':
                         if self.elapsed_time >= self.start_time[i] and self.elapsed_time < self.end_time[i]:
-                            self.msg.data[i] = self.offset[i] + self.amplitude/2 * signal.sawtooth(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + math.pi / 180 * self.phase[i], width=1)
+                            self.msg.data[i] = self.offset[i] + self.amplitude[i]/2 * signal.sawtooth(2 * math.pi * self.frequency[i] * (self.elapsed_time - self.start_time[i]) + math.pi / 180 * self.phase[i], width=1)
                         else:
                             self.msg.data[i] = self.offset[i]
                     case 'chirp':
