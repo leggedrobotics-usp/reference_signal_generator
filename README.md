@@ -30,7 +30,9 @@
 - [Author](#author)
 
 ## 🧐 About <a name = "about"></a>
-Wanting to quickly send some reference signals for your own control system in ROS2? Then this repo's for you. **reference_signal_generator** allows you to quickly bind a ROS2 node to a user-specified topic, and publish several different types of reference signals. The parameters are customized through ROS2 service calls.
+Wanting to quickly send some reference signals for your own control system in ROS2? Then this repo's for you. **reference_signal_generator** allows you to quickly bind a ROS2 node to a user-specified topic, and publish a reference signal with any number of inputs and a series of different signal types. The parameters are customized through ROS2 service calls.
+
+You may call the services in many different ways, but this package comes with an extra: a custom [Foxglove](https://foxglove.dev/) panel made specifically for it! Check out [foxglove-reference-signal](https://github.com/leggedrobotics-usp/foxglove-reference-signal) now for more information!
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 This repo is a standard ROS2 package (ament_python) that depends on custom service definitions.
@@ -73,18 +75,12 @@ Each instance of **reference_signal_generator** binds to a user-specified topic 
 ros2 run reference_signal_generator reference_signal_generator --ros-args -p topic_name:=<your_topic_name>
 ```
 
-After starting the generator node, multiple services will be created to start and stop the reference signals. Use ``ros2 topic list`` to check them out. You must see:
+After starting the generator node, two services will be created to start and stop the reference signals. Use ``ros2 topic list`` to check them out. You must see:
 
-- ``/<your_topic_name>/chirp`` Chirp (frequency-swept cosine)
-- ``/<your_topic_name>/ramp`` Ramp
-- ``/<your_topic_name>/sawtooth`` Rising-ramp sawtooth wave
-- ``/<your_topic_name>/sine`` Sine wave
-- ``/<your_topic_name>/square`` Square wave
-- ``/<your_topic_name>/step`` Step
-- ``/<your_topic_name>/triangle`` Triangle wave
-- ``/<your_topic_name>/stop`` Used to stop a signal created by other service before its *total_time*
+- ``/<your_topic_name>/start`` Used to parameterize and start the reference signal
+- ``/<your_topic_name>/stop`` Used to stop a signal created by a ``start`` before its *total_time*
 
-See [reference_signal_srvs](https://github.com/leggedrobotics-usp/reference_signal_srvs) for more details on each type of reference signal.
+See [reference_signal_srvs](https://github.com/leggedrobotics-usp/reference_signal_srvs) for more details on each type of reference signal. Currently supported types are Step, Ramp, Sine, Square, Triangle, Sawtooth and Chirp.
 
 ## 🔋 Feature requests <a name="feature_requests"></a>
 
